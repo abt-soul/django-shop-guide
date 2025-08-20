@@ -1,0 +1,96 @@
+{% extends "main/base.html" %}
+
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}Все товары{% endif %}
+{% endblock title %}
+
+{% block content %}
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container wrap">
+            <div>
+                <h1 class="title" data-animate>Вещи, которыераздают вайб каждый день</h1>
+                <p class="subtitle" data-animate>Функциональные вещи без лишнего шума. Чистая эстетика, честные материалы, понятные цены.</p>
+                <div class="chips" data-animate>
+                    <span class="chip active"><a href="{% url 'main:product_list' %}">Все</a></span>
+                    {% for category in categories %}
+                    <span class="chip">
+                        <a href="{{ category.get_absolute_url }}">
+                            {{ category.name }}
+                        </a>
+                    </span>
+                    {% endfor %}
+                </div>
+            <div style="margin-top:16px" data-animate>
+              <a class="btn" href="{% url 'main:product_list' %}">К каталогу</a>
+              <a class="btn btn-ghost" href="#about">Узнать больше</a>
+            </div>
+          </div>
+          <aside class="hero-card" aria-label="Выбор редакции" data-animate>
+            <div class="hero-media" role="img" aria-label="Минималистичный рабочий стол"></div>
+            <div class="hero-content">
+              <strong>Коллекция сезона</strong>
+              <p class="subtitle" style="margin:6px 0 0">Собрали вещи, которые дополняют друг друга и легко вписываются в повседневность.</p>
+            </div>
+          </aside>
+        </div>
+    </section>
+    <!-- Каталог товаров -->
+    <h1 id="products" style="margin:24px 0 8px">
+        {% if category %}{{ category.name }}{% else %}Все товары{% endif %}
+    </h1>
+    <div class="catalog-toolbar">
+        <nav class="cat-list" aria-label="Категории каталога">
+            <ul>
+                <li><a href="{% url 'main:product_list' %}">Все</a></li>
+                {% for category in categories %}
+                <li>
+                    <a href="{{ category.get_absolute_url }}">
+                        {{ category.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+        <div class="sort">
+            <label for="sort" class="sr-only">Сортировка</label>
+            <select id="sort" name="sort" aria-label="Сортировка">
+                <option value="price-asc">
+                    <a href="?sort=price">По цене (дешевые)</a>
+                </option>
+                <option value="price-desc">
+                    <a href="?sort=-price">По цене (дорогие)</a>
+                </option>
+            </select>
+      </div>
+    </div>
+    {% if not products %}
+    <h2 id="products" style="margin:24px 0 8px">
+        Товары в данной категории отсутствуют
+    </h2>
+    {% else %}
+    <div class="grid products" role="list">
+        {% for product in products %}
+        <!-- Карточка товара -->
+        <span id="cat-odezhda" class="sr-only" aria-hidden="true"></span>
+        <article class="card" role="listitem" aria-labelledby="p1-title">
+            <div class="card-media" style="position:relative">
+                <span class="badge">New</span>
+                <a href="{{ product.get_absolute_url }}">
+                    <img alt="{{ product.name }}" src="{{ product.image.url }}" />
+                </a>
+            </div>
+            <div class="card-body">
+                <div id="p1-title">{{ product.name }}</div>
+                <div class="meta"><span class="price">{{ product.price }}</span><span>XS–XL</span></div>
+                <div class="actions">
+                    <a class="btn" href="#">Купить</a>
+                    <a class="btn btn-ghost" href="{{ product.get_absolute_url }}">Подробнее</a>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+{% endblock content %}
